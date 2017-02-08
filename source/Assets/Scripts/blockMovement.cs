@@ -15,6 +15,7 @@ public class blockMovement : MonoBehaviour
     public bool hasRotation = false;
     public bool startPosition = true;
     public bool isCheckPoint = false;
+    public Rigidbody rb;
 
     [Header("Posicao")]
     //movimento
@@ -34,6 +35,7 @@ public class blockMovement : MonoBehaviour
     [Header("Tipo de movimento")]
     public bool singleMove;
     public bool singleSpin;
+    //public bool positiveFirst;
 
     [Header("atributos de movimento")]
 
@@ -50,6 +52,8 @@ public class blockMovement : MonoBehaviour
     //velocidades
     public Vector3 blockPosSpeed;
     public Vector3 blockRotSpeed;
+
+    float stop = 0f;
 
     [Header("Random")]
     public bool randomMovement = false;
@@ -69,9 +73,7 @@ public class blockMovement : MonoBehaviour
     // Use this for initialization   
     void Start()
     {
-        ///////////////////////////
-        ///////// TA AQUI ///////// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<=====================
-        ///////////////////////////
+        rb = gameObject.GetComponent<Rigidbody>();
         if (startPosition)
             startPos = gameObject.transform.position;
         currentRotation = gameObject.transform.rotation.eulerAngles;
@@ -145,123 +147,209 @@ public class blockMovement : MonoBehaviour
         if (moveDirection.x < 0)
         {
             if (currentPos.x > minPos.x)
-                movement.x *= blockPosSpeed.x;
+            {
+                rb.AddForce(-transform.right * blockPosSpeed.x, ForceMode.VelocityChange);
+
+                ///    rb.velocity.x.Equals(-blockPosSpeed.x);
+            }
+
             else
-                movement.x *= 0;
+                rb.velocity.x.Equals(stop);
 
         }
         else
         {
             if (currentPos.x < maxPos.x)
-                movement.x *= blockPosSpeed.x;
+                rb.AddForce(transform.right * blockPosSpeed.x, ForceMode.VelocityChange);
+            //rb.velocity.x.Equals(blockPosSpeed.x);
             else
-                movement.x *= 0;
+                rb.velocity.x.Equals(stop);
         }
 
         // movimento em y
         if (moveDirection.y < 0)
         {
             if (currentPos.y > minPos.y)
-                movement.y *= blockPosSpeed.y;
+                rb.AddForce(-transform.up * blockPosSpeed.x, ForceMode.VelocityChange);
             else
-                movement.y *= 0;
+                rb.velocity.y.Equals(stop);
 
         }
         else
         {
             if (currentPos.y < maxPos.y)
-                movement.y *= blockPosSpeed.y;
+                rb.AddForce(transform.up * blockPosSpeed.y, ForceMode.VelocityChange);
             else
-                movement.y *= 0;
+                rb.velocity.y.Equals(stop);
         }
 
         // movimento em z
         if (moveDirection.z < 0)
         {
             if (currentPos.z > minPos.z)
-                movement.z *= blockPosSpeed.z;
+                rb.AddForce(-transform.forward * blockPosSpeed.z, ForceMode.VelocityChange);
             else
-                movement.z *= 0;
+                rb.velocity.z.Equals(stop);
 
         }
         else
         {
             if (currentPos.z < maxPos.z)
-                movement.z *= blockPosSpeed.z;
+                rb.AddForce(transform.forward * blockPosSpeed.z, ForceMode.VelocityChange);
             else
-                movement.z *= 0;
+                rb.velocity.z.Equals(stop);
         }
 
-        transform.Translate(movement * Time.deltaTime);
+        
     }
 
     //movimento ping pong
     public void pingPongMovement()
     {
         Vector3 currentPos = gameObject.transform.position;
-        Vector3 movement = moveDirection;
+        //Vector3 movement = moveDirection;
+        Vector3 currentDir = moveDirection;
 
         // movimento em x
-        if (moveDirection.x < 0)
+
+        //if (moveDirection.x < 0)
+        // {
+
+        //  if (currentPos.x <= minPos.x)
+        // {
+        //     moveDirection.x *= -1;
+        //     movement.x *= -1;
+
+        //   }
+
+        //}
+        //  else
+        //  {
+        //   
+        //  if (currentPos.x >= maxPos.x)
+        //  {
+        //      moveDirection.x *= -1;
+        //    movement.x *= -1;
+        //   }
+        // }
+
+        // movimento em y
+        // if (moveDirection.y < 0)
+        //{
+        // if (currentPos.y <= minPos.y)
+        //  {
+        //      moveDirection.y *= -1;
+        //      movement.y *= -1;
+        //   }
+
+        // }
+        //   else
+        //{
+        //     if (currentPos.y >= maxPos.y)
+        //     {
+        //         moveDirection.y *= -1;
+        //        movement.y *= -1;
+        //     }
+        // }
+
+        // movimento em z
+        // if (moveDirection.z < 0)
+        // {
+        //    if (currentPos.z <= minPos.z)
+        //    {
+        //       moveDirection.z *= -1;
+        //        movement.z *= -1;
+        //  }
+
+        //}
+        //else
+        //{
+        //    if (currentPos.z >= maxPos.z)
+        //    {
+        //        moveDirection.z *= -1;
+        //       movement.z *= -1;
+        //    }
+        // }
+
+
+        // movement.x *= blockPosSpeed.x;
+        //movement.y *= blockPosSpeed.y;
+        //movement.z *= blockPosSpeed.z;
+
+        // transform.Translate(movement * Time.deltaTime, Space.World);
+
+        //NEW SCRIPT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        // X
+        if (currentDir.x < 0)
         {
             if (currentPos.x <= minPos.x)
             {
-                moveDirection.x *= -1;
-                movement.x *= -1;
+                currentDir *= -1;
             }
-
+            else
+            {
+                blockSingleMovement();
+            }
         }
         else
         {
             if (currentPos.x >= maxPos.x)
             {
-                moveDirection.x *= -1;
-                movement.x *= -1;
+                currentDir *= -1;
+            }
+            else
+            {
+                blockSingleMovement();
             }
         }
-
-        // movimento em y
-        if (moveDirection.y < 0)
+        // Y
+        if (currentDir.y < 0)
         {
             if (currentPos.y <= minPos.y)
             {
-                moveDirection.y *= -1;
-                movement.y *= -1;
+                currentDir *= -1;
             }
-
+            else
+            {
+                blockSingleMovement();
+            }
         }
         else
         {
             if (currentPos.y >= maxPos.y)
             {
-                moveDirection.y *= -1;
-                movement.y *= -1;
+                currentDir *= -1;
+            }
+            else
+            {
+                blockSingleMovement();
             }
         }
-
-        // movimento em z
-        if (moveDirection.z < 0)
+        // Z
+        if (currentDir.z < 0)
         {
             if (currentPos.z <= minPos.z)
             {
-                moveDirection.z *= -1;
-                movement.z *= -1;
+                currentDir *= -1;
             }
-
+            else
+            {
+                blockSingleMovement();
+            }
         }
         else
         {
             if (currentPos.z >= maxPos.z)
             {
-                moveDirection.z *= -1;
-                movement.z *= -1;
+                currentDir *= -1;
+            }
+            else
+            {
+                blockSingleMovement();
             }
         }
 
-        movement.x *= blockPosSpeed.x;
-        movement.y *= blockPosSpeed.y;
-        movement.z *= blockPosSpeed.z;
-        transform.Translate(movement * Time.deltaTime, Space.World);
+
         ajustPosition();
 
 

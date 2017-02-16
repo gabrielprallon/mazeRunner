@@ -74,6 +74,7 @@ public class blockMovement : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
+        //this.GetComponent<Rigidbody>();
         if (startPosition)
             startPos = gameObject.transform.position;
         currentRotation = gameObject.transform.rotation.eulerAngles;
@@ -154,8 +155,12 @@ public class blockMovement : MonoBehaviour
             }
 
             else
+            {
                 rb.velocity.x.Equals(stop);
-
+                rb.angularVelocity.x.Equals(stop);
+                rb.Sleep();
+                return;
+            }
         }
         else
         {
@@ -163,7 +168,12 @@ public class blockMovement : MonoBehaviour
                 rb.AddForce(transform.right * blockPosSpeed.x, ForceMode.VelocityChange);
             //rb.velocity.x.Equals(blockPosSpeed.x);
             else
+            {
                 rb.velocity.x.Equals(stop);
+                rb.angularVelocity.x.Equals(stop);
+                rb.Sleep();
+                return;
+            }
         }
 
         // movimento em y
@@ -172,7 +182,11 @@ public class blockMovement : MonoBehaviour
             if (currentPos.y > minPos.y)
                 rb.AddForce(-transform.up * blockPosSpeed.x, ForceMode.VelocityChange);
             else
+            {
                 rb.velocity.y.Equals(stop);
+                rb.angularVelocity.y.Equals(stop);
+                rb.Sleep();
+            }
 
         }
         else
@@ -180,7 +194,11 @@ public class blockMovement : MonoBehaviour
             if (currentPos.y < maxPos.y)
                 rb.AddForce(transform.up * blockPosSpeed.y, ForceMode.VelocityChange);
             else
-                rb.velocity.y.Equals(stop);
+            {
+                rb.velocity.y.Equals(0);
+                rb.angularVelocity.y.Equals(0);
+                rb.Sleep();
+            }
         }
 
         // movimento em z
@@ -189,7 +207,11 @@ public class blockMovement : MonoBehaviour
             if (currentPos.z > minPos.z)
                 rb.AddForce(-transform.forward * blockPosSpeed.z, ForceMode.VelocityChange);
             else
-                rb.velocity.z.Equals(stop);
+            {
+                rb.velocity.z.Equals(0);
+                rb.angularVelocity.z.Equals(0);
+                rb.Sleep();
+            }
 
         }
         else
@@ -197,7 +219,11 @@ public class blockMovement : MonoBehaviour
             if (currentPos.z < maxPos.z)
                 rb.AddForce(transform.forward * blockPosSpeed.z, ForceMode.VelocityChange);
             else
-                rb.velocity.z.Equals(stop);
+            {
+                rb.velocity.z.Equals(0);
+                rb.angularVelocity.z.Equals(0);
+                rb.Sleep();
+            }
         }
 
         
@@ -282,26 +308,29 @@ public class blockMovement : MonoBehaviour
         // X
         if (currentDir.x < 0)
         {
-            if (currentPos.x <= minPos.x)
-            {
-                currentDir *= -1;
-            }
-            else
+            if (currentPos.x > minPos.x)
             {
                 blockSingleMovement();
+            }
+
+            else
+            {
+                rb.Sleep();
+                moveDirection.x *= -1;
             }
         }
         else
         {
-            if (currentPos.x >= maxPos.x)
-            {
-                currentDir *= -1;
-            }
-            else
+            if (currentPos.x < maxPos.x)
             {
                 blockSingleMovement();
             }
-        }
+            else
+            {
+                rb.Sleep();
+                moveDirection.x *= -1;
+            }
+            }
         // Y
         if (currentDir.y < 0)
         {
